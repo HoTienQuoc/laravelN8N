@@ -9,7 +9,12 @@ Route::get('/', function () {
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+Route::get('user-dashboard', function () {
+    return Inertia::render('UserDashboard');
+})->middleware(['auth'])->name('user-dashboard');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
