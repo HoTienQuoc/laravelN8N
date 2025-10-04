@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureUserAdmin;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -9,7 +10,7 @@ Route::get('/', function () {
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth',EnsureUserAdmin::class])->name('dashboard');
 
 Route::get('user-dashboard', function () {
     return Inertia::render('UserDashboard');

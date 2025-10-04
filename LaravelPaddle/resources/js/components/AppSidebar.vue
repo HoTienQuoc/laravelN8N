@@ -13,14 +13,25 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
+
+const page = usePage();
+
+const user = computed(() => page.props.auth.user);
+
+console.log('AppSidebar user:', user.value);
+
+const dashboardRoute = computed(() => {
+    return user.value?.role === 'user' ? '/user-dashboard' : '/dashboard';
+});
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboardRoute.value,
         icon: LayoutGrid,
     },
 ];
