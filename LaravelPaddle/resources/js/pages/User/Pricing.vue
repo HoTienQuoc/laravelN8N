@@ -22,7 +22,7 @@ onMounted(async () => {
     try {
         const paddleInstance = await initializePaddle({
             environment: 'sandbox', // Change to 'production' for live environment
-            token: 'live_9c1efbec6faac5ab869b65d2e2c' // Replace with your actual auth token
+            token: 'live_162e465724ab81b3fbb761eee2e' // Replace with your actual auth token
         });
         if (paddleInstance) {
             paddle.value = paddleInstance;

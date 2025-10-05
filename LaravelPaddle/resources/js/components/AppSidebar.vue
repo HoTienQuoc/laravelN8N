@@ -22,7 +22,7 @@ const page = usePage();
 
 const user = computed(() => page.props.auth.user);
 
-console.log('AppSidebar user:', user.value);
+// console.log('AppSidebar user:', user.value);
 
 const dashboardRoute = computed(() => {
     return user.value?.role === 'user' ? '/user-dashboard' : '/dashboard';
