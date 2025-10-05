@@ -6,7 +6,7 @@ import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 
-const certPath = path.resolve(__dirname, 'docker/ssl/localhost.crt');
+const certPath = path.resolve(__dirname, 'docker/ssl/localhost.pem');
 const keyPath = path.resolve(__dirname, 'docker/ssl/localhost.key');
 
 export default defineConfig({
