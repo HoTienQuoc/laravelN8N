@@ -23,17 +23,17 @@ services:
         depends_on:
             - mysql
             - redis
-    nginx:
-        image: nginx:alpine
+    ngrok:
+        image: 'ngrok/ngrok:alpine'
+        environment:
+            NGROK_AUTHTOKEN: '${NGROK_AUTHTOKEN}'
+        command: 'http laravel.test:80'
         ports:
-            - "80:80"
-            - "443:443" # Expose HTTPS port for Nginx
-        volumes:
-            - .:/var/www/html
-            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf # Nginx configuration
-            - ./docker/nginx/ssl:/etc/nginx/ssl # SSL certificate
+            - '4040:4040'
         networks:
             - sail
+        depends_on:
+            - laravel.test
     mysql:
         image: "mysql/mysql-server:8.0"
         ports:
