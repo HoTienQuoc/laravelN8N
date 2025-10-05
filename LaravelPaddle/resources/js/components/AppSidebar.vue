@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, CreditCard, RefreshCw, PenTool, Users, Receipt, Book  } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed } from 'vue';
 
@@ -28,13 +28,52 @@ const dashboardRoute = computed(() => {
     return user.value?.role === 'user' ? '/user-dashboard' : '/dashboard';
 });
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboardRoute.value,
-        icon: LayoutGrid,
-    },
-];
+const mainNavItems = computed((): NavItem[] => {
+    const baseItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboardRoute.value,
+            icon: LayoutGrid,
+        },
+    ];
+
+    // Add role-specific navigation items
+    if (user.value?.role === 'user') {
+        baseItems.push(
+            {
+                title: 'Pricing',
+                href: '/pricing',
+                icon: CreditCard,
+            },
+            {
+                title: 'Refund',
+                href: '/refund',
+                icon: RefreshCw,
+            }
+        );
+    } else if (user.value?.role === 'admin') {
+        baseItems.push(
+            {
+                title: 'Create Blog',
+                href: '/admin/create-blog',
+                icon: PenTool,
+            },
+            {
+                title: 'View Users',
+                href: '/admin/users',
+                icon: Users,
+            },
+            {
+                title: 'View Blogs',
+                href: '/admin/blogs',
+                icon: Book,
+            }
+        );
+    }
+
+
+    return baseItems;
+});
 
 const footerNavItems: NavItem[] = [
     {
