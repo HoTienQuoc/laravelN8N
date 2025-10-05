@@ -5,9 +5,32 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Switch } from "@/components/ui/switch";
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { Check, Star, Zap } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
+import { initializePaddle, Paddle } from '@paddle/paddle-js';
+
+// Initialize Paddle instance
+const paddle = ref<Paddle | null>(null);
+
+const page = usePage();
+const user = computed(() => page.props.auth.user);
+
+
+// Initialize Paddle on component mount
+onMounted(async () => {
+    try {
+        const paddleInstance = await initializePaddle({
+            environment: 'sandbox', // Change to 'production' for live environment
+            token: 'live_9c1efbec6faac5ab869b65d2e2c' // Replace with your actual auth token
+        });
+        if (paddleInstance) {
+            paddle.value = paddleInstance;
+        }
+    } catch (error) {
+        console.error('Failed to initialize Paddle:', error);
+    }
+});
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,18 +52,25 @@ interface Plan {
     name: string;
     description: string;
     monthlyPrice: number;
+    monthlyPriceID: string;
+    yearlyPriceID: string;
     yearlyPrice: number;
     icon: any; // Component type
     popular: boolean;
     features: string[];
 }
 
+
+
+// Pricing plans
 // Pricing plans
 const plans: Plan[] = [
     {
         id: 'basic',
         name: 'Basic Plan',
         description: 'Perfect for individuals getting started',
+        monthlyPriceID: 'pri_01k6s17449b3em6khce87bkzb8',
+        yearlyPriceID: 'pri_01k6s1dd0xk04z2ahjans6jfm5',
         monthlyPrice: 10,
         yearlyPrice: 108,
         icon: Star,
@@ -52,12 +82,15 @@ const plans: Plan[] = [
         name: 'Premium Plan',
         description: 'Best for professionals and growing teams',
         monthlyPrice: 15,
+        monthlyPriceID: 'pri_01k6s2prqh238npnvd66qp7520',
+        yearlyPriceID: 'pri_01k6s2nhtwyzbz79p3mhv32x3f',
         yearlyPrice: 144,
         icon: Zap,
         popular: true,
         features: ['Access to all Blogs', 'Mobile app access'],
     },
 ];
+
 
 // Helper functions (not computed properties)
 const getPrice = (plan: Plan): number => {
@@ -89,14 +122,37 @@ const subscribe = (planId: string, isYearlyPlan: boolean) => {
             return;
         }
 
+        // Check if Paddle is initialized
+        if (!paddle.value) {
+            console.error('Paddle is not initialized yet');
+            alert('Payment system is still loading. Please try again in a moment.');
+            return;
+        }
+
         console.log(`Subscribing to ${plan.name}`);
         console.log(`Billing: ${isYearlyPlan ? 'Yearly' : 'Monthly'}`);
         console.log(`Price: $${getPrice(plan)}`);
 
-        // Here you would typically:
-        // 1. Navigate to payment page
-        // 2. Call API to create subscription
-        // 3. Redirect to payment processor
+        // Get the correct price ID based on billing cycle
+        const priceId = isYearlyPlan ? plan.yearlyPriceID : plan.monthlyPriceID;
+
+        // Open Paddle checkout
+        paddle.value.Checkout.open({
+            items: [
+                {
+                    priceId: priceId,
+                    quantity: 1
+                }
+            ],
+            settings: {
+                displayMode: "overlay",
+            },
+            customData: {
+                email: user.value?.email || '',
+                userId: user.value?.id || '',
+            },
+        });
+
 
         alert(`Redirecting to payment for ${plan.name} (${isYearlyPlan ? 'Yearly' : 'Monthly'}: $${getPrice(plan)})`);
     } catch (error) {
@@ -104,6 +160,8 @@ const subscribe = (planId: string, isYearlyPlan: boolean) => {
         alert('An error occurred while processing your subscription. Please try again.');
     }
 };
+
+
 </script>
 
 <template>
