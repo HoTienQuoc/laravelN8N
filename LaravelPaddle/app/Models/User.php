@@ -21,8 +21,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role', // Added role attribute
         'password',
-        'role',
+        'status', // Subscription status
+        'subscription_type', // Type of subscription
+        'current_billing_period_start', // Start of current billing period
+        'current_billing_period_end', // End of current billing period
+        'subscription_id', // Paddle subscription ID
     ];
 
     /**

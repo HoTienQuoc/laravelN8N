@@ -19,6 +19,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+
+            // Subscription fields
+            $table->enum('status', ['active', 'cancelled', 'past_due', 'none'])->default('none');
+            $table->enum('subscription_type', ['basic', 'premium'])->nullable();
+            $table->timestamp('current_billing_period_start')->nullable();
+            $table->timestamp('current_billing_period_end')->nullable();
+            $table->string('subscription_id')->nullable(); // Paddle subscription ID
             $table->timestamps();
         });
 

@@ -21,8 +21,8 @@ const user = computed(() => page.props.auth.user);
 onMounted(async () => {
     try {
         const paddleInstance = await initializePaddle({
-            environment: 'sandbox', // Change to 'production' for live environment
-            token: 'live_162e465724ab81b3fbb761eee2e' // Replace with your actual auth token
+            environment: 'production', // Change to 'production' for live environment
+            token: 'live_77c7752ca61bf2c7f554fd1df25' // Replace with your actual auth token
         });
         if (paddleInstance) {
             paddle.value = paddleInstance;
