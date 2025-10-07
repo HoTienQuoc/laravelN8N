@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureUserAdmin;
+use App\Http\Controllers\PaddleController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -42,15 +43,16 @@ Route::get('user-dashboard', function () {
 })->middleware(['auth'])->name('user-dashboard');
 
 //Paddle webhook
-Route::post('webhook/paddle', function (Request $request) {
-    // Handle Paddle webhook logic here
+// Route::post('webhook/paddle', function (Request $request) {
+//     // Handle Paddle webhook logic here
 
-    // Example: Log the webhook data
-    Log::info('Paddle Webhook Received:', $request->all());
+//     // Example: Log the webhook data
+//     Log::info('Paddle Webhook Received:', $request->all());
 
-    // Respond with a 200 OK status
-    return response()->json(['status' => 'success'], 200);
-})->name('webhook.paddle');
+//     // Respond with a 200 OK status
+//     return response()->json(['status' => 'success'], 200);
+// })->name('webhook.paddle');
+Route::post('webhook/paddle', [PaddleController::class, 'handlePaddleWebhook'])->name('webhook.paddle');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
